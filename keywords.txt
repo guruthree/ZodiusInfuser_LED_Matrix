@@ -1,0 +1,25 @@
+#######################################
+# Syntax Coloring Map For ZodiusInfuser_LED_Matrix
+#######################################
+# Class
+#######################################
+
+LEDMatrix       KEYWORD1
+
+#######################################
+# Methods and Functions
+#######################################     
+
+begin           KEYWORD2
+flip            KEYWORD2
+display         KEYWORD2
+clearDispaly    KEYWORD2
+getBrightnessLevels KEYWORD2
+setBrightnessLevels KEYWORD2
+
+#######################################
+# Constants
+#######################################
+
+MAX_BRIGHTNESS_LEVELS   LITERAL1
+
