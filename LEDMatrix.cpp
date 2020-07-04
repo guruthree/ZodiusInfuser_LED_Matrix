@@ -68,7 +68,7 @@ void LEDMatrix::display() {
 
     // write out the data for that row
     unsigned short int mydata;
-    for (int i = 3; i >= 0; i--) {
+    for (int i = WIDTH/8 - 1; i >= 0; i--) {
     mydata = 0;
     for (int j = 0; j < 8; j++) {
     if (buffer2[(7-whichRow)*WIDTH + i*8+j] > brightAt) {
