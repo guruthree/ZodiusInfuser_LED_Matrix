@@ -2,8 +2,8 @@
 
 #ifndef TEENSYDUINO
 void delayNanoseconds(uint8_t c) {
-  for (uint8_t i = 0; i < c; i++) {
-  }
+    for (uint8_t i = 0; i < c; i++) {
+    }
 }
 #endif
 
@@ -46,41 +46,41 @@ void LEDMatrix::display() {
 
     for (int whichRow = 0; whichRow < HEIGHT; whichRow++) {
 
-    // set latch low so updating data doesn't get written out immediately
-    digitalWriteFast(row_latch, 0);
-    digitalWriteFast(col_latch, 0);
-    delayNanoseconds(40);
+        // set latch low so updating data doesn't get written out immediately
+        digitalWriteFast(row_latch, 0);
+        digitalWriteFast(col_latch, 0);
+        delayNanoseconds(40);
 
-    // select which row
-    for (int d = 0; d < HEIGHT; d++) {
-    digitalWriteFast(row_clock, 0);
+        // select which row
+        for (int d = 0; d < HEIGHT; d++) {
+            digitalWriteFast(row_clock, 0);
 
-    if (d == whichRow) {
-    digitalWriteFast(row_data, 1);
-    }
-    else {
-    digitalWriteFast(row_data, 0);
-    }
+            if (d == whichRow) {
+                digitalWriteFast(row_data, 1);
+            }
+            else {
+                digitalWriteFast(row_data, 0);
+            }
 
-    digitalWriteFast(row_clock, 1);
-    delayNanoseconds(40);
-    }
+            digitalWriteFast(row_clock, 1);
+            delayNanoseconds(40);
+        }
 
-    // write out the data for that row
-    unsigned short int mydata;
-    for (int i = WIDTH/8 - 1; i >= 0; i--) {
-    mydata = 0;
-    for (int j = 0; j < 8; j++) {
-    if (buffer2[(7-whichRow)*WIDTH + i*8+j] > brightAt) {
-    bitSet(mydata,j);
-    }
-    }
-    spi->transfer(mydata);
-    }
+        // write out the data for that row
+        unsigned short int mydata;
+        for (int i = WIDTH/8 - 1; i >= 0; i--) {
+            mydata = 0;
+            for (int j = 0; j < 8; j++) {
+                if (buffer2[(7-whichRow)*WIDTH + i*8+j] > brightAt) {
+                    bitSet(mydata,j);
+                }
+            }
+            spi->transfer(mydata);
+        }
 
-    // re-enable latches
-    digitalWriteFast(row_latch, 1);
-    digitalWriteFast(col_latch, 1);
+        // re-enable latches
+        digitalWriteFast(row_latch, 1);
+        digitalWriteFast(col_latch, 1);
     }
 
     // clear last row to keep brightness even
@@ -96,17 +96,18 @@ void LEDMatrix::display() {
     clearDisplay();
 
     brightAt++;
-    if (brightAt == brightnessLevels)
-    brightAt = 0;
+    if (brightAt == brightnessLevels) {
+        brightAt = 0;
     }
+}
 
-    void LEDMatrix::clearDisplay() {
+void LEDMatrix::clearDisplay() {
     digitalWriteFast(row_latch, 0);
     for (int d = 0; d < HEIGHT; d++) {
-    digitalWriteFast(row_clock, 0);
-    digitalWriteFast(row_data, 0);
-    digitalWriteFast(row_clock, 1);
-    delayNanoseconds(40);
+        digitalWriteFast(row_clock, 0);
+        digitalWriteFast(row_data, 0);
+        digitalWriteFast(row_clock, 1);
+        delayNanoseconds(40);
     }
     digitalWriteFast(row_latch, 1);
 }
