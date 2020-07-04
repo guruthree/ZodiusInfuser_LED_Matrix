@@ -49,8 +49,7 @@ void LEDMatrix::display() {
         // set latch low so updating data doesn't get written out immediately
         digitalWriteFast(row_latch, 0);
         digitalWriteFast(col_latch, 0);
-        delayNanoseconds(40);
-
+        
         // select which row
         for (int d = 0; d < HEIGHT; d++) {
             digitalWriteFast(row_clock, 0);
@@ -63,7 +62,7 @@ void LEDMatrix::display() {
             }
 
             digitalWriteFast(row_clock, 1);
-            delayNanoseconds(40);
+            delayNanoseconds(50);
         }
 
         // write out the data for that row
@@ -81,19 +80,12 @@ void LEDMatrix::display() {
         // re-enable latches
         digitalWriteFast(row_latch, 1);
         digitalWriteFast(col_latch, 1);
+        
+        // reduces ghosting
+        delayNanoseconds(250);
+        clearDisplay();
+        delayNanoseconds(50);
     }
-
-    // clear last row to keep brightness even
-    //  delayMicroseconds(1); // needs to be tweaked to match brightness of top row
-    //  digitalWriteFast(COL_LATCH, 0);
-    //  spi->transfer(0);
-    //  spi->transfer(0);
-    //  spi->transfer(0);
-    //  spi->transfer(0);
-    //  digitalWriteFast(COL_LATCH, 1);
-
-    delayMicroseconds(3); // needs to be tweaked to match brightness of top row
-    clearDisplay();
 
     brightAt++;
     if (brightAt == brightnessLevels) {
@@ -107,7 +99,7 @@ void LEDMatrix::clearDisplay() {
         digitalWriteFast(row_clock, 0);
         digitalWriteFast(row_data, 0);
         digitalWriteFast(row_clock, 1);
-        delayNanoseconds(40);
+        delayNanoseconds(50);
     }
     digitalWriteFast(row_latch, 1);
 }
