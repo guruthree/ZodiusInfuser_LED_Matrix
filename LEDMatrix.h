@@ -22,6 +22,7 @@ class LEDMatrix : public GFXcanvas8 {
         void begin();
         void flip();
         void display();
+        void clearRow();
         void clearDisplay();
         ~LEDMatrix(void);
 

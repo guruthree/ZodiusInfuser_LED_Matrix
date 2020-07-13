@@ -90,6 +90,17 @@ void LEDMatrix::display() {
     }
 }
 
+void LEDMatrix::clearRow() {
+    digitalWriteFast(row_latch, 0);
+    digitalWriteFast(row_data, 0);
+    for (int d = 0; d < HEIGHT; d++) {
+        digitalWriteFast(row_clock, 0);
+        digitalWriteFast(row_clock, 1);
+        delayNanoseconds(5);
+    }
+    digitalWriteFast(row_latch, 1);
+}
+
 void LEDMatrix::clearDisplay() {
 	// takes a little longer than clearing the 
 	// darlington array but produces clearer image
