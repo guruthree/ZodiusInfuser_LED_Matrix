@@ -44,17 +44,23 @@ void LEDMatrix::flip() {
 void LEDMatrix::display() {
     // print out buffer2
 
-    // enable first row
-	digitalWriteFast(row_data, 1);
-	digitalWriteFast(row_clock, 0);
-	delayNanoseconds(50);
-	digitalWriteFast(row_clock, 1);
-	delayNanoseconds(50);
-	digitalWriteFast(row_data, 0);
-	
+    // setup for sending data to first row
+    digitalWriteFast(row_data, 1);
+    
     // for (int whichRow = 0; whichRow < HEIGHT; whichRow++) {
     for (int whichRow = HEIGHT - 1; whichRow >= 0; whichRow--) {
 
+        // make sure nothing will display while updating darlington array
+        clearDisplay();
+
+        // update darlington display, latch now to give it time to settle
+        digitalWriteFast(row_latch, 0);
+        digitalWriteFast(row_clock, 0);
+        delayNanoseconds(5);
+        digitalWriteFast(row_clock, 1);
+        digitalWriteFast(row_latch, 1);
+
+        digitalWriteFast(col_latch, 0);
         // write out the data for that row
         unsigned short int mydata;
         for (int i = WIDTH/8 - 1; i >= 0; i--) {
@@ -66,23 +72,16 @@ void LEDMatrix::display() {
             }
             spi->transfer(mydata);
         }
-
-        // trigger latches to refresh screen
-		digitalWriteFast(row_latch, 0);
-        digitalWriteFast(col_latch, 0);
-		delayNanoseconds(50);
-        digitalWriteFast(row_latch, 1);
         digitalWriteFast(col_latch, 1);
-		delayNanoseconds(50);
-		delayNanoseconds(500); // for brightness
-		
-        // shift to next row
-		digitalWriteFast(row_clock, 0);
-		delayNanoseconds(50);
-		digitalWriteFast(row_clock, 1);
+
+        delayNanoseconds(500); // for brightness
+
+        if (whichRow == HEIGHT - 1) {
+            digitalWriteFast(row_data, 0);
+        }
     }
 
-	clearDisplay();
+    clearDisplay();
 
     brightAt++;
     if (brightAt == brightnessLevels) {
@@ -102,13 +101,13 @@ void LEDMatrix::clearRow() {
 }
 
 void LEDMatrix::clearDisplay() {
-	// takes a little longer than clearing the 
-	// darlington array but produces clearer image
-	digitalWriteFast(col_latch, 0);
-	for (int i = WIDTH/8 - 1; i >= 0; i--) {
-		spi->transfer(0);
-	}
-	digitalWriteFast(col_latch, 1);
+    // takes a little longer than clearing the 
+    // darlington array but produces clearer image
+    digitalWriteFast(col_latch, 0);
+    for (int i = WIDTH/8 - 1; i >= 0; i--) {
+        spi->transfer(0);
+    }
+    digitalWriteFast(col_latch, 1);
 }
 
 LEDMatrix::~LEDMatrix() {
