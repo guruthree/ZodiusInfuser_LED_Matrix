@@ -2,12 +2,13 @@
 #include <Adafruit_GFX.h>
 #include <LEDMatrix.h>
 
-static const uint8_t COL_CLOCK_PIN = 19;
-static const uint8_t COL_LATCH_PIN = 18;
-static const uint8_t COL_DATA_PIN = 17;
-static const uint8_t ROW_LATCH_PIN = 16;
+static const uint8_t ROW_CLOCK_PIN = 19;
+static const uint8_t ROW_LATCH_PIN = 18;
+static const uint8_t ROW_DATA_PIN = 17;
+static const uint8_t COL_LATCH_PIN = 16;
 
-LEDMatrix gfx(32, 8, SPI, COL_CLOCK_PIN, COL_LATCH_PIN, COL_DATA_PIN, ROW_LATCH_PIN, LEDMatrix::MAX_BRIGHTNESS_LEVELS >> 2, 4);
+// note ROW and COL are labelled backwards on the PCB
+LEDMatrix gfx(32, 8, SPI, ROW_CLOCK_PIN, ROW_LATCH_PIN, ROW_DATA_PIN, COL_LATCH_PIN, LEDMatrix::MAX_BRIGHTNESS_LEVELS / 4, 4);
 
 #ifdef TEENSYDUINO
 IntervalTimer myTimer;
@@ -21,6 +22,7 @@ unsigned long currentMillis, textMillis, previousTextMillis = 0;
 void myDisplay() // easiest way around member function pointer
 {
   gfx.display();
+// gfx.displayRow();
 }
 
 void setup()
