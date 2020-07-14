@@ -61,7 +61,8 @@ public:
 	//--------------------------------------------------
 private:
 	void selectRow(uint8_t rowIndex);
-
+	void writeColumns(uint8_t whichRow, uint8_t levels);
+	
 	void clearColumns(void);
 	void clearRows(void);
 

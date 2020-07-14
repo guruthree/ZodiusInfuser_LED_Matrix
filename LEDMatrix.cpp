@@ -97,21 +97,7 @@ void LEDMatrix::display()
 	for (uint16_t whichRow = 0; whichRow < HEIGHT; whichRow++)
 	{
 		digitalWriteFast(_colLatch, LOW);
-
-		// write out the data for that row
-		uint8_t colByte;
-		for (int i = _registers - 1; i >= 0; i--)
-		{
-			colByte = 0x00;
-			for (uint8_t j = 0; j < 8; j++)
-			{
-				if (_displayBuffer[(whichRow * WIDTH) + (i * 8) + j] > _brightAt)
-				{
-					bitSet(colByte, j);
-				}
-			}
-			_spi.transfer(colByte);
-		}
+		writeColumns(whichRow, _brightAt);
 
 		digitalWriteFast(_rowLatch, LOW);
 		selectRow(whichRow);
@@ -140,25 +126,9 @@ void LEDMatrix::displayRow()
 	for(uint8_t levels = 0; levels < _brightnessLevels; levels++)
 	{
 		digitalWriteFast(_colLatch, LOW);
-
-		// write out the data for that row
-		uint8_t colByte;
-		for(int i = _registers - 1; i >= 0; i--)
-		{
-			colByte = 0x00;
-			for(uint8_t j = 0; j < 8; j++)
-			{
-				if(_displayBuffer[(_currentRow * WIDTH) + (i * 8) + j] > levels)
-				{
-					bitSet(colByte, j);
-				}
-			}
-			_spi.transfer(colByte);
-		}
-
-		// trigger latches to refresh screen
+		writeColumns(_currentRow, levels);
+		// trigger latch to refresh screen
 		digitalWriteFast(_colLatch, HIGH);
-
 		delayMicroseconds(_onDuration); // for brightness
 	}
 
@@ -254,6 +224,25 @@ void LEDMatrix::selectRow(uint8_t rowIndex)
 		digitalWriteFast(_rowClock, LOW);
 	}
 	delayNanoseconds(DELAY_NS);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void LEDMatrix::writeColumns(uint8_t whichRow, uint8_t levels)
+{
+	// write out the data for that row
+	uint8_t colByte;
+	for(int i = _registers - 1; i >= 0; i--)
+	{
+		colByte = 0x00;
+		for(uint8_t j = 0; j < 8; j++)
+		{
+			if(_displayBuffer[(whichRow * WIDTH) + (i * 8) + j] > levels)
+			{
+				bitSet(colByte, j);
+			}
+		}
+		_spi.transfer(colByte);
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
