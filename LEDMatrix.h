@@ -51,10 +51,10 @@ public:
 	uint32_t getOnDuration(void);
 	void setOnDuration(uint32_t onDurationUS);
 
-    void flip(void);
-    void display(void);
+	void flip(void);
+	void display(void);
 	void displayRow(void);
-    void clearDisplay(void);
+	void clearDisplay(void);
 
 	void debugDisplay(Print& serialClass);
 
@@ -71,9 +71,9 @@ private:
 	//--------------------------------------------------
 private:
 	uint8_t* _displayBuffer;
-    SPIClass& _spi;
+	SPIClass& _spi;
 
-    const uint8_t _rowClock;
+	const uint8_t _rowClock;
 	const uint8_t _rowLatch;
 	const uint8_t _rowData;
 	const uint8_t _colLatch;
@@ -81,7 +81,7 @@ private:
 	uint8_t _brightnessLevels;
 	uint32_t _onDuration;
 
-    uint8_t _brightAt;
+	uint8_t _brightAt;
 	uint8_t _currentRow;
 };
 #endif
