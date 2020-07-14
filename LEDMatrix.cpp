@@ -19,6 +19,7 @@ LEDMatrix::LEDMatrix(uint16_t width, uint16_t height, SPIClass& spiClass,
 , _rowLatch(rowLatchPin)
 , _rowData(rowDataPin)
 , _colLatch(colLatchPin)
+, _registers(width >> 3)
 , _brightnessLevels(levels)
 , _onDuration(onDurationUS)
 , _brightAt(0)
@@ -93,14 +94,13 @@ void LEDMatrix::display()
 {
 	// print out displayBuffer
 	
-	uint8_t registers = (WIDTH >> 3);
 	for (uint16_t whichRow = 0; whichRow < HEIGHT; whichRow++)
 	{
 		digitalWriteFast(_colLatch, LOW);
 
 		// write out the data for that row
 		uint8_t colByte;
-		for (int i = registers - 1; i >= 0; i--)
+		for (int i = _registers - 1; i >= 0; i--)
 		{
 			colByte = 0x00;
 			for (uint8_t j = 0; j < 8; j++)
@@ -137,14 +137,13 @@ void LEDMatrix::displayRow()
 	selectRow(_currentRow);
 	digitalWriteFast(_rowLatch, HIGH);
 
-	uint8_t registers = (WIDTH >> 3);
 	for(uint8_t levels = 0; levels < _brightnessLevels; levels++)
 	{
 		digitalWriteFast(_colLatch, LOW);
 
 		// write out the data for that row
 		uint8_t colByte;
-		for(int i = registers - 1; i >= 0; i--)
+		for(int i = _registers - 1; i >= 0; i--)
 		{
 			colByte = 0x00;
 			for(uint8_t j = 0; j < 8; j++)
@@ -265,8 +264,7 @@ void LEDMatrix::clearColumns()
 
 	digitalWriteFast(_colLatch, LOW);
 
-	uint8_t registers = (WIDTH >> 3);
-	for(uint8_t i = 0; i < registers; i++)
+	for(uint8_t i = 0; i < _registers; i++)
 	{
 		_spi.transfer(0x00);
 	}

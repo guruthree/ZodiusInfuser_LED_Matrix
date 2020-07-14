@@ -78,6 +78,8 @@ private:
 	const uint8_t _rowData;
 	const uint8_t _colLatch;
 
+	const uint8_t _registers;
+
 	uint8_t _brightnessLevels;
 	uint32_t _onDuration;
 
