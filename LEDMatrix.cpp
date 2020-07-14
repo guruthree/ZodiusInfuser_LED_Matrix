@@ -24,12 +24,14 @@ LEDMatrix::LEDMatrix(uint16_t width, uint16_t height, SPIClass& spiClass,
 , _onDuration(onDurationUS)
 , _brightAt(0)
 , _currentRow(0)
+, _lastFrameDrawn(1)
 {
 	_displayBuffer = (uint8_t*)malloc(width * height);
 	memset(_displayBuffer, 0, width * height);
 
 	_brightAt = 0;
 	_currentRow = 0;
+	_lastFrameDrawn = 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,12 +82,28 @@ void LEDMatrix::setOnDuration(uint32_t onDurationUS)
 	_onDuration = onDurationUS;
 }
 
+uint8_t LEDMatrix::wasLastFrameDrawn()
+{
+	return _lastFrameDrawn;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void LEDMatrix::flip()
+uint8_t LEDMatrix::flip()
 {
 	// note, not actually a flip because buffer is private in GFXcanvas8
+	if (_lastFrameDrawn == 1)
+	{
+		forceFlip();
+		return 0; // SUCCESS
+	}
+	return 1; // FAIL
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void LEDMatrix::forceFlip()
+{
 	noInterrupts();
 	memcpy(_displayBuffer, getBuffer(), WIDTH * HEIGHT);
+	_lastFrameDrawn = 0; // we now need to draw this frame
 	interrupts();
 }
 
@@ -114,6 +132,7 @@ void LEDMatrix::display()
 	_brightAt++;
 	if(_brightAt == _brightnessLevels)
 		_brightAt = 0;
+	_lastFrameDrawn = 1; // mark frame drawn
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +155,10 @@ void LEDMatrix::displayRow()
 
 	_currentRow++;
 	if(_currentRow == HEIGHT)
+	{
 		_currentRow = 0;
+		_lastFrameDrawn = 1;
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

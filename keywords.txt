@@ -15,7 +15,9 @@ getBrightnessLevels KEYWORD2
 setBrightnessLevels KEYWORD2
 getOnDuration   KEYWORD2
 setOnDuration   KEYWORD2
+getFrameDrawn   KEYWORD2
 flip            KEYWORD2
+forceFlip       KEYWORD2
 display         KEYWORD2
 displayRow      KEYWORD2
 clearDisplay    KEYWORD2

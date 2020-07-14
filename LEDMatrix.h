@@ -50,8 +50,11 @@ public:
 
 	uint32_t getOnDuration(void);
 	void setOnDuration(uint32_t onDurationUS);
+	
+	uint8_t wasLastFrameDrawn(void);
 
-	void flip(void);
+	uint8_t flip(void);
+	void forceFlip(void);
 	void display(void);
 	void displayRow(void);
 	void clearDisplay(void);
@@ -86,6 +89,7 @@ private:
 
 	uint8_t _brightAt;
 	uint8_t _currentRow;
+	uint8_t _lastFrameDrawn; // 1 when ready for next frame
 };
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
