@@ -1,45 +1,89 @@
 #ifndef _LEDMATRIX_H
 #define _LEDMATRIX_H
 
+/***** Includes *****/
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 
+/***** Defines *****/
 #ifndef TEENSYDUINO
 void delayNanoseconds(uint8_t c);
 #define digitalWriteFast digitalWrite
 #endif
 
-#define MAX_BRIGHTNESS_LEVELS 255
 
-class LEDMatrix : public GFXcanvas8 {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Classes
+////////////////////////////////////////////////////////////////////////////////////////////////////
+class LEDMatrix : public GFXcanvas8
+{
+	//--------------------------------------------------
+	// Constants
+	//--------------------------------------------------
+public:
+	static const uint8_t MAX_BRIGHTNESS_LEVELS = 255;
+	static const uint32_t DEFAULT_CLOCK_SPEED = 9000000;
+	static const uint32_t DEFAULT_ON_DURATION = 1;
+private:
+	static const uint32_t DELAY_NS = 10;
+	static const uint32_t BRIGHTNESS_US = 1;
 
-    public:
-        LEDMatrix(uint16_t w, uint16_t h, SPIClass *spiClass, 
-            uint8_t rowClock, uint8_t rowLatch, uint8_t rowData, uint8_t colLatch)
-            : LEDMatrix(w, h, spiClass, rowClock, rowLatch, rowData, colLatch, MAX_BRIGHTNESS_LEVELS) {}
-        LEDMatrix(uint16_t w, uint16_t h, SPIClass *spiClass, 
-            uint8_t rowClock, uint8_t rowLatch, uint8_t rowData, uint8_t colLatch, uint8_t bl);
-        void begin();
-        void flip();
-        void display();
-        void clearRow();
-        void clearDisplay();
-        ~LEDMatrix(void);
 
-        uint8_t getBrightnessLevels() { return brightnessLevels; }
-        void setBrightnessLevels(uint8_t bl) {brightnessLevels = bl; }
+	//--------------------------------------------------
+	// Constructors/Destructor
+	//--------------------------------------------------
+public:
+	LEDMatrix(uint16_t width, uint16_t height, SPIClass& spiClass, 
+			  uint8_t rowClockPin, uint8_t rowLatchPin, uint8_t rowDataPin, uint8_t colLatchPin,
+			  uint8_t levels = MAX_BRIGHTNESS_LEVELS, uint32_t onDurationUS = DEFAULT_ON_DURATION);
+	~LEDMatrix(void); 
 
-    private:
-        uint8_t* buffer2;
-        SPIClass *spi;
 
-        uint8_t row_clock;
-        uint8_t row_latch;
-        uint8_t row_data;
-        uint8_t col_latch;
+	//--------------------------------------------------
+	// Methods
+	//--------------------------------------------------
+public:
+	void begin(uint32_t clockSpeed = DEFAULT_CLOCK_SPEED);
 
-        uint8_t brightAt;
-        uint8_t brightnessLevels;
+	uint8_t getBrightnessLevels(void);
+	void setBrightnessLevels(uint8_t levels);
+
+	uint32_t getOnDuration(void);
+	void setOnDuration(uint32_t onDurationUS);
+
+    void flip(void);
+    void display(void);
+	void displayRow(void);
+    void clearDisplay(void);
+
+	void debugDisplay(Print& serialClass);
+
+	//--------------------------------------------------
+private:
+	void selectRow(uint8_t rowIndex);
+
+	void clearColumns(void);
+	void clearRows(void);
+
+
+	//--------------------------------------------------
+	// Variables
+	//--------------------------------------------------
+private:
+	uint8_t* _displayBuffer;
+    SPIClass& _spi;
+
+    const uint8_t _rowClock;
+	const uint8_t _rowLatch;
+	const uint8_t _rowData;
+	const uint8_t _colLatch;
+
+	uint8_t _brightnessLevels;
+	uint32_t _onDuration;
+
+    uint8_t _brightAt;
+	uint8_t _currentRow;
 };
-
 #endif
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////

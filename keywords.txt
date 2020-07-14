@@ -11,15 +11,21 @@ LEDMatrix       KEYWORD1
 #######################################     
 
 begin           KEYWORD2
-flip            KEYWORD2
-display         KEYWORD2
-clearDispaly    KEYWORD2
 getBrightnessLevels KEYWORD2
 setBrightnessLevels KEYWORD2
+getOnDuration   KEYWORD2
+setOnDuration   KEYWORD2
+flip            KEYWORD2
+display         KEYWORD2
+displayRow      KEYWORD2
+clearDisplay    KEYWORD2
+debugDisplay    KEYWORD2
+
 
 #######################################
 # Constants
 #######################################
 
 MAX_BRIGHTNESS_LEVELS   LITERAL1
-
+DEFAULT_CLOCK_SPEED     LITERAL1
+DEFAULT_ON_DURATION 	LITERAL1
