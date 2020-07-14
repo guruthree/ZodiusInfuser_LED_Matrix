@@ -36,7 +36,7 @@ public:
 	LEDMatrix(uint16_t width, uint16_t height, SPIClass& spiClass, 
 			  uint8_t rowClockPin, uint8_t rowLatchPin, uint8_t rowDataPin, uint8_t colLatchPin,
 			  uint8_t levels = MAX_BRIGHTNESS_LEVELS, uint32_t onDurationUS = DEFAULT_ON_DURATION);
-	~LEDMatrix(void); 
+	virtual ~LEDMatrix(void); 
 
 
 	//--------------------------------------------------
